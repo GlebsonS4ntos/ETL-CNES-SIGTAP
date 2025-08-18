@@ -5,6 +5,23 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties("file.download")
-public record DownloadProperties (
-    String cnesUrl,
-    String sigtapUrl ){}
+public class DownloadProperties {
+    String cnesUrl;
+    String sigtapUrl;
+
+    public String getSigtapUrl() {
+        return sigtapUrl;
+    }
+
+    public void setSigtapUrl(String sigtapUrl) {
+        this.sigtapUrl = sigtapUrl;
+    }
+
+    public String getCnesUrl() {
+        return cnesUrl;
+    }
+
+    public void setCnesUrl(String cnesUrl) {
+        this.cnesUrl = cnesUrl;
+    }
+}
