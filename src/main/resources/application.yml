@@ -2,12 +2,22 @@ server:
   port: 8089
 spring:
   application:
-    name=ETL
+    name: ETL
   datasource:
     url: jdbc:postgresql://localhost:5432/etl
     username: admin
     password: password
+    driver-class-name: org.postgresql.Driver
+  batch:
+    jdbc:
+      initialize-schema: always
 file:
   download:
     cnes-url: ${CNES_URL}
     sigtap-url: ${SIGTAP_URL}
+logging:
+  file:
+    name: logs/etl-log.txt
+  level:
+    root: INFO
+    com.Glebson.ETL: INFO
