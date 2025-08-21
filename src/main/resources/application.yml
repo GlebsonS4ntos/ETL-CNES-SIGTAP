@@ -11,6 +11,12 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+  sql:
+    init:
+      mode: always
+      schema-locations:
+      - classpath:schema.sql
+      - classpath:schema-batch.sql
 file:
   download:
     cnes-url: ${CNES_URL}
