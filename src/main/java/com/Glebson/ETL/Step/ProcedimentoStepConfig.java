@@ -43,7 +43,7 @@ public class ProcedimentoStepConfig {
                     fieldSet.readString("coFinanciamento"),
                     fieldSet.readString("coRubrica"),
                     fieldSet.readInt("qtTempoPermanencia"),
-                    fieldSet.readString("dtCompetencia") // pode depois converter p/ YearMonth se quiser
+                    fieldSet.readString("dtCompetencia")
                 )).build();
     }
 
