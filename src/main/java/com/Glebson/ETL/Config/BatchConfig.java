@@ -18,22 +18,18 @@ public class BatchConfig {
 
     private final PlatformTransactionManager platformTransactionManager;
     private final JobRepository jobRepository;
-    private final FlowConfig flowConfig;
 
     public BatchConfig(PlatformTransactionManager platformTransactionManager,
-                       JobRepository jobRepository,
-                       FlowConfig flowConfig) {
+                       JobRepository jobRepository) {
         this.platformTransactionManager = platformTransactionManager;
         this.jobRepository = jobRepository;
-        this.flowConfig = flowConfig;
     }
 
     @Bean
-    public Job job(DownloadUnzipTasklet downloadUnzipTasklet) {
-        Flow parallelFlow = flowConfig.processarArquivosParaleloFlow(jobRepository, platformTransactionManager);
+    public Job job(DownloadUnzipTasklet downloadUnzipTasklet, Flow processarArquivosParaleloFlow) {
 
         Step flowStep = new StepBuilder("processarArquivosParaleloFlowStep", jobRepository)
-                .flow(parallelFlow)
+                .flow(processarArquivosParaleloFlow)
                 .build();
 
         return new JobBuilder("job", jobRepository)
