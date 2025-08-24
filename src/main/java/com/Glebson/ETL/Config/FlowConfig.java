@@ -1,13 +1,8 @@
 package com.Glebson.ETL.Config;
 
-import com.Glebson.ETL.Domain.Sigtap.Procedimento;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -17,17 +12,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import org.springframework.batch.core.job.flow.Flow;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Configuration
 public class FlowConfig {
-
-    @Autowired
-    private FlatFileItemReader<Procedimento> procedimentoReader;
-
-    @Autowired
-    private JdbcBatchItemWriter<Procedimento> procedimentoItemWriter;
 
     @Bean
     public TaskExecutor virtualTaskExecutor(){
@@ -35,24 +23,11 @@ public class FlowConfig {
     }
 
     @Bean
-    public Step procedimentoStep(JobRepository repository, PlatformTransactionManager transactionManager){
-        return new StepBuilder("procedimentoStep", repository)
-                .<Procedimento, Procedimento>chunk(1000, transactionManager)
-                .reader(procedimentoReader)
-                .writer(procedimentoItemWriter)
-                .taskExecutor(virtualTaskExecutor())
-                .build();
-    }
-
-    @Bean
-    public Flow procedimentoFlow(JobRepository repository, PlatformTransactionManager transactionManager){
-        return new FlowBuilder<Flow>("procedimentoFlow")
-                .start(procedimentoStep(repository, transactionManager))
-                .build();
-    }
-
-    @Bean
-    public Flow processarArquivosParaleloFlow(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Flow processarArquivosParaleloFlow(JobRepository jobRepository, PlatformTransactionManager transactionManager,
+                                              Step procedimentoStep,
+                                              Step tipoProcedimentoStep,
+                                              Step compatibilidadeProcedimentosSecundarioStep,
+                                              Step compatibilidadeProcedimentosCBOStep) {
         ThreadPoolTaskExecutor taskExecutor =  new ThreadPoolTaskExecutor();
         taskExecutor.setMaxPoolSize(2);
         taskExecutor.initialize();
@@ -60,8 +35,43 @@ public class FlowConfig {
         return new FlowBuilder<Flow>("processarArquivosParaleloFlow")
                 .split(taskExecutor)
                 .add(
-                    procedimentoFlow(jobRepository, transactionManager)
+                    procedimentoFlow(jobRepository, transactionManager, procedimentoStep),
+                    tipoProcedimentoFlow(jobRepository, transactionManager, tipoProcedimentoStep),
+                    compatibilidadeProcedimentosSecundarioFlow(jobRepository, transactionManager, compatibilidadeProcedimentosSecundarioStep),
+                    compatibilidadeProcedimentosCBOFlow(jobRepository, transactionManager, compatibilidadeProcedimentosCBOStep)
                 ).build();
+    }
+
+    @Bean
+    public Flow procedimentoFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                 Step procedimentoStep){
+        return new FlowBuilder<Flow>("procedimentoFlow")
+                .start(procedimentoStep)
+                .build();
+    }
+
+    @Bean
+    public Flow tipoProcedimentoFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                     Step tipoProcedimentoStep){
+        return new FlowBuilder<Flow>("tipoProcedimentoFlow")
+                .start(tipoProcedimentoStep)
+                .build();
+    }
+
+    @Bean
+    public Flow compatibilidadeProcedimentosSecundarioFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                                           Step compatibilidadeProcedimentosSecundarioStep){
+        return new FlowBuilder<Flow>("compatibilidadeProcedimentosSecundarioFlow")
+                .start(compatibilidadeProcedimentosSecundarioStep)
+                .build();
+    }
+
+    @Bean
+    public Flow compatibilidadeProcedimentosCBOFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                                    Step compatibilidadeProcedimentosCBOStep){
+        return new FlowBuilder<Flow>("compatibilidadeProcedimentosCBOFlow")
+                .start(compatibilidadeProcedimentosCBOStep)
+                .build();
     }
 }
 
