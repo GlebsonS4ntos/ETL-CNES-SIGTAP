@@ -36,6 +36,7 @@ CREATE TABLE compatibilidade_procedimentos_secundario (
     codigo_registro_procedimento_principal VARCHAR(2) NOT NULL,
     codigo_procedimento_secundario VARCHAR(10) NOT NULL,
     codigo_registro_procedimento_secundario VARCHAR(2) NOT NULL,
+    compatibilidade CHAR(6) NOT NULL,
     qtd_permitida_procedimento_secundario INT NOT NULL,
     competencia CHAR(6) NOT NULL
 );
@@ -43,6 +44,6 @@ CREATE TABLE compatibilidade_procedimentos_secundario (
 CREATE TABLE tipo_procedimento (
     id SERIAL PRIMARY KEY,
     codigo_tipo VARCHAR(5) NOT NULL,
-    nome_tipo TEXT NOT NULL,
+    nome_tipo VARCHAR(256) NOT NULL,
     competencia CHAR(6) NOT NULL
 );
