@@ -1,5 +1,6 @@
 package com.Glebson.ETL.Config;
 
+import com.Glebson.ETL.Step.DeletePathTasklet;
 import com.Glebson.ETL.Step.DownloadUnzipTasklet;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -26,7 +27,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job job(DownloadUnzipTasklet downloadUnzipTasklet, Flow processarArquivosParaleloFlow) {
+    public Job job(DownloadUnzipTasklet downloadUnzipTasklet, Flow processarArquivosParaleloFlow, Step deleteStep) {
 
         Step flowStep = new StepBuilder("processarArquivosParaleloFlowStep", jobRepository)
                 .flow(processarArquivosParaleloFlow)
@@ -34,7 +35,12 @@ public class BatchConfig {
 
         return new JobBuilder("job", jobRepository)
                 .start(downloadStep(downloadUnzipTasklet))
-                .next(flowStep)
+                    .on("FAILED").to(deleteStep)
+                .from(downloadStep(downloadUnzipTasklet))
+                    .on("*").to(flowStep)
+                .from(flowStep)
+                    .on("*").to(deleteStep)
+                .end()
                 .build();
     }
 
@@ -42,6 +48,13 @@ public class BatchConfig {
     public Step downloadStep(DownloadUnzipTasklet downloadUnzipTasklet) {
         return new StepBuilder("downloadStep", jobRepository)
                 .tasklet(downloadUnzipTasklet, platformTransactionManager)
+                .build();
+    }
+
+    @Bean
+    public Step deleteStep(DeletePathTasklet deletePathTasklet){
+        return new StepBuilder("deleteStep", jobRepository)
+                .tasklet(deletePathTasklet, platformTransactionManager)
                 .build();
     }
 }
