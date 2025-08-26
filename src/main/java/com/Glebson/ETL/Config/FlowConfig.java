@@ -27,7 +27,9 @@ public class FlowConfig {
                                               Step procedimentoStep,
                                               Step tipoProcedimentoStep,
                                               Step compatibilidadeProcedimentosSecundarioStep,
-                                              Step compatibilidadeProcedimentosCBOStep) {
+                                              Step compatibilidadeProcedimentosCBOStep,
+                                              Step estadoStep,
+                                              Step municipioStep) {
         ThreadPoolTaskExecutor taskExecutor =  new ThreadPoolTaskExecutor();
         taskExecutor.setMaxPoolSize(2);
         taskExecutor.initialize();
@@ -38,7 +40,10 @@ public class FlowConfig {
                     procedimentoFlow(jobRepository, transactionManager, procedimentoStep),
                     tipoProcedimentoFlow(jobRepository, transactionManager, tipoProcedimentoStep),
                     compatibilidadeProcedimentosSecundarioFlow(jobRepository, transactionManager, compatibilidadeProcedimentosSecundarioStep),
-                    compatibilidadeProcedimentosCBOFlow(jobRepository, transactionManager, compatibilidadeProcedimentosCBOStep)
+                    compatibilidadeProcedimentosCBOFlow(jobRepository, transactionManager, compatibilidadeProcedimentosCBOStep),
+                    estadoFlow(jobRepository, transactionManager, estadoStep),
+                    municipioFlow(jobRepository, transactionManager, municipioStep)
+
                 ).build();
     }
 
@@ -71,6 +76,22 @@ public class FlowConfig {
                                                     Step compatibilidadeProcedimentosCBOStep){
         return new FlowBuilder<Flow>("compatibilidadeProcedimentosCBOFlow")
                 .start(compatibilidadeProcedimentosCBOStep)
+                .build();
+    }
+
+    @Bean
+    public Flow estadoFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                                    Step estadoStep){
+        return new FlowBuilder<Flow>("estadoFlow")
+                .start(estadoStep)
+                .build();
+    }
+
+    @Bean
+    public Flow municipioFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                                    Step municipioStep){
+        return new FlowBuilder<Flow>("municipioFlow")
+                .start(municipioStep)
                 .build();
     }
 }
