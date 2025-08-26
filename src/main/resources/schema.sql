@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS procedimento;
 DROP TABLE IF EXISTS tipo_procedimento;
 DROP TABLE IF EXISTS compatibilidade_procedimentos_secundario;
 DROP TABLE IF EXISTS compatibilidade_procedimentos_cbo;
+DROP TABLE IF EXISTS municipio;
+DROP TABLE IF EXISTS estado;
 
 CREATE TABLE procedimento (
     id SERIAL PRIMARY KEY,
@@ -46,4 +48,18 @@ CREATE TABLE tipo_procedimento (
     codigo_tipo VARCHAR(5) NOT NULL,
     nome_tipo VARCHAR(256) NOT NULL,
     competencia CHAR(6) NOT NULL
+);
+
+CREATE TABLE estado (
+    id SERIAL PRIMARY KEY,
+    coUf VARCHAR(10) NOT NULL,
+    coSigla VARCHAR(10) NOT NULL,
+    noEstado VARCHAR(256) NOT NULL
+);
+
+CREATE TABLE municipio (
+    id SERIAL PRIMARY KEY,
+    coMunicipio VARCHAR(10) NOT NULL,
+    noMunicipio VARCHAR(256) NOT NULL,
+    coSigla VARCHAR(10) NOT NULL
 );
