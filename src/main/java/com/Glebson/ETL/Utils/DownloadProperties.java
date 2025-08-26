@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class DownloadProperties {
     String cnesUrl;
     String sigtapUrl;
+    String cnesCompetence;
 
     public String getSigtapUrl() {
         return sigtapUrl;
@@ -23,5 +24,13 @@ public class DownloadProperties {
 
     public void setCnesUrl(String cnesUrl) {
         this.cnesUrl = cnesUrl;
+    }
+
+    public String getCnesCompetence() {
+        return cnesCompetence;
+    }
+
+    public void setCnesCompetence(String cnesCompetence) {
+        this.cnesCompetence = cnesCompetence;
     }
 }

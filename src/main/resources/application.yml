@@ -21,6 +21,7 @@ file:
   download:
     cnes-url: ${CNES_URL}
     sigtap-url: ${SIGTAP_URL}
+    cnes-competence: ${CNES_COMPETENCE}
 logging:
   file:
     name: logs/etl-log.txt
