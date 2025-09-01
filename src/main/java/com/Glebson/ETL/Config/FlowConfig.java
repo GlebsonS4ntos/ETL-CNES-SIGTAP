@@ -3,6 +3,7 @@ package com.Glebson.ETL.Config;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -24,13 +25,20 @@ public class FlowConfig {
 
     @Bean
     public Flow processarArquivosParaleloFlow(JobRepository jobRepository, PlatformTransactionManager transactionManager,
-                                              Step procedimentoStep,
-                                              Step tipoProcedimentoStep,
-                                              Step compatibilidadeProcedimentosSecundarioStep,
-                                              Step compatibilidadeProcedimentosCBOStep,
-                                              Step estadoStep,
-                                              Step municipioStep) {
+                                              @Qualifier("procedimentoStep") Step procedimentoStep,
+                                              @Qualifier("tipoProcedimentoStep") Step tipoProcedimentoStep,
+                                              @Qualifier("compatibilidadeProcedimentosSecundarioStep") Step compatibilidadeProcedimentosSecundarioStep,
+                                              @Qualifier("compatibilidadeProcedimentosCBOStep") Step compatibilidadeProcedimentosCBOStep,
+                                              @Qualifier("estadoStep") Step estadoStep,
+                                              @Qualifier("municipioStep") Step municipioStep,
+                                              @Qualifier("cboStep") Step cboStep,
+                                              @Qualifier("profissionalStep") Step profissionalStep,
+                                              @Qualifier("estabelecimentoStep") Step estabelecimentoStep,
+                                              @Qualifier("cargaHorariaCboProfissionalStep") Step cargaHorariaCboProfissionalStep,
+                                              @Qualifier("equipeStep") Step equipeStep,
+                                              @Qualifier("estabelecimentoEquipeProfissionalStep") Step estabelecimentoEquipeProfissionalStep) {
         ThreadPoolTaskExecutor taskExecutor =  new ThreadPoolTaskExecutor();
+        taskExecutor.setCorePoolSize(2);
         taskExecutor.setMaxPoolSize(2);
         taskExecutor.initialize();
 
@@ -42,8 +50,13 @@ public class FlowConfig {
                     compatibilidadeProcedimentosSecundarioFlow(jobRepository, transactionManager, compatibilidadeProcedimentosSecundarioStep),
                     compatibilidadeProcedimentosCBOFlow(jobRepository, transactionManager, compatibilidadeProcedimentosCBOStep),
                     estadoFlow(jobRepository, transactionManager, estadoStep),
-                    municipioFlow(jobRepository, transactionManager, municipioStep)
-
+                    municipioFlow(jobRepository, transactionManager, municipioStep),
+                    cboFlow(jobRepository, transactionManager, cboStep),
+                    profissionalFlow(jobRepository, transactionManager, profissionalStep),
+                    estabelecimentoFlow(jobRepository, transactionManager, estabelecimentoStep),
+                    cargaHorariaCboProfissionalFlow(jobRepository, transactionManager, cargaHorariaCboProfissionalStep),
+                    equipeFlow(jobRepository, transactionManager, equipeStep),
+                    estabelecimentoEquipeProfissionalFlow(jobRepository, transactionManager, estabelecimentoEquipeProfissionalStep)
                 ).build();
     }
 
@@ -94,5 +107,52 @@ public class FlowConfig {
                 .start(municipioStep)
                 .build();
     }
-}
 
+    @Bean
+    public Flow cboFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                              Step cboStep){
+        return new FlowBuilder<Flow>("cboFlow")
+                .start(cboStep)
+                .build();
+    }
+
+    @Bean
+    public Flow profissionalFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                    Step profissionalStep){
+        return new FlowBuilder<Flow>("profissionalFlow")
+                .start(profissionalStep)
+                .build();
+    }
+
+    @Bean
+    public Flow estabelecimentoFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                 Step estabelecimentoStep){
+        return new FlowBuilder<Flow>("estabelecimentoFlow")
+                .start(estabelecimentoStep)
+                .build();
+    }
+
+    @Bean
+    public Flow cargaHorariaCboProfissionalFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                    Step cargaHorariaCboProfissionalStep){
+        return new FlowBuilder<Flow>("cargaHorariaCboProfissionalFlow")
+                .start(cargaHorariaCboProfissionalStep)
+                .build();
+    }
+
+    @Bean
+    public Flow equipeFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                                                Step equipeStep){
+        return new FlowBuilder<Flow>("equipeFlow")
+                .start(equipeStep)
+                .build();
+    }
+
+    @Bean
+    public Flow estabelecimentoEquipeProfissionalFlow(JobRepository repository, PlatformTransactionManager transactionManager,
+                           Step estabelecimentoEquipeProfissionalStep){
+        return new FlowBuilder<Flow>("estabelecimentoEquipeProfissionalFlow")
+                .start(estabelecimentoEquipeProfissionalStep)
+                .build();
+    }
+}
