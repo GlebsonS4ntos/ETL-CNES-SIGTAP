@@ -32,7 +32,7 @@ public class DownloadUnzipTasklet implements Tasklet {
 
     private final DownloadProperties downloadProperties;
     private static final Logger log = LoggerFactory.getLogger(DownloadUnzipTasklet.class);
-    private final Path dir = Paths.get("download"); // corrigido nome
+    private final Path dir = Paths.get("download");
 
     public DownloadUnzipTasklet(DownloadProperties downloadProperties) {
         this.downloadProperties = downloadProperties;
