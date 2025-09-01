@@ -71,7 +71,7 @@ public class EstabelecimentoStepConfig {
                     INSERT INTO estabelecimento (
                         coEstabelecimento,
                         cnes,
-                        noEstabelecimento
+                        noEstabelecimento,
                         coMunicipio,
                         coEstado
                     ) VALUES (
