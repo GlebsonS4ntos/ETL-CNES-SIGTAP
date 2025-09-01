@@ -4,6 +4,12 @@ DROP TABLE IF EXISTS compatibilidade_procedimentos_secundario;
 DROP TABLE IF EXISTS compatibilidade_procedimentos_cbo;
 DROP TABLE IF EXISTS municipio;
 DROP TABLE IF EXISTS estado;
+DROP TABLE IF EXISTS cbo;
+DROP TABLE IF EXISTS profissional;
+DROP TABLE IF EXISTS estabelecimento;
+DROP TABLE IF EXISTS cargaHorariaCboProfissional;
+DROP TABLE IF EXISTS equipe;
+DROP TABLE IF EXISTS estabelecimentoEquipeProfissional;
 
 CREATE TABLE procedimento (
     id SERIAL PRIMARY KEY,
@@ -62,4 +68,50 @@ CREATE TABLE municipio (
     coMunicipio VARCHAR(10) NOT NULL,
     noMunicipio VARCHAR(256) NOT NULL,
     coSigla VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE cbo (
+    id SERIAL PRIMARY KEY,
+    coCbo VARCHAR(10) NOT NULL,
+    noAtividadeProfissional VARCHAR(256) NOT NULL
+);
+
+CREATE TABLE profissional (
+    id SERIAL PRIMARY KEY,
+    coProfissional VARCHAR(256) NOT NULL,
+    noProfissional VARCHAR(256) NOT NULL,
+    cns VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE estabelecimento (
+    id SERIAL PRIMARY KEY,
+    coEstabelecimento VARCHAR(256) NOT NULL,
+    cnes VARCHAR(20) NOT NULL,
+    noEstabelecimento VARCHAR(256) NOT NULL,
+    coMunicipio VARCHAR(10) NOT NULL,
+    coEstado VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE cargaHorariaCboProfissional (
+    id SERIAL PRIMARY KEY,
+    coUnidade VARCHAR(256) NOT NULL,
+    coProfissional VARCHAR(256) NOT NULL,
+    coCbo VARCHAR(10) NOT NULL,
+    qtdCargaHoraria VARCHAR(10)
+);
+
+CREATE TABLE equipe (
+    id SERIAL PRIMARY KEY,
+    tipoEquipe INT NOT NULL,
+    noEquipe VARCHAR(256) NOT NULL,
+    coUnidade VARCHAR(256) NOT NULL,
+    ineEquipe VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE estabelecimentoEquipeProfissional (
+    id SERIAL PRIMARY KEY,
+    ineEquipe VARCHAR(10) NOT NULL,
+    coProfissional VARCHAR(256) NOT NULL,
+    coCbo VARCHAR(256) NOT NULL,
+    coUnidade VARCHAR(256) NOT NULL
 );
